@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"encoding/json"
 	"log"
 	"net/http"
 
@@ -19,13 +18,15 @@ func NewProductsHandler(log *log.Logger) *Products {
 
 // Implement the ServeHTTP() method by Handler interface to make this struct a handler
 func (prd *Products) ServeHTTP(response http.ResponseWriter, request *http.Request) {
+
 	// Handle GET request and return list of products
 	if request.Method == http.MethodGet {
+		prd.log.Print("Handle GET request for products.")
 		prd.getProducts(response, request)
 		return
 	}
 
-	// Handle all the http request and return not allowed header
+	// Handle all other http requests and return not allowed header
 	response.WriteHeader(http.StatusMethodNotAllowed)
 }
 
@@ -33,13 +34,10 @@ func (prd *Products) ServeHTTP(response http.ResponseWriter, request *http.Reque
 func (prd *Products) getProducts(response http.ResponseWriter, request *http.Request) {
 	products := data.GetProducts()
 
-	// Parse data to json
-	data, err := json.Marshal(products)
+	// Parse data to json and write to response
+	err := products.ToJSON(response)
 	if err != nil {
-		prd.log.Print("Unable to convert data, invalid format.")
+		prd.log.Print("Unable to parse products data.")
 		http.Error(response, "Invalid product data.", http.StatusInternalServerError)
 	}
-
-	// Write json data to response
-	response.Write(data)
 }
