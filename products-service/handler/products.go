@@ -3,7 +3,9 @@ package handler
 import (
 	"log"
 	"net/http"
+	"strconv"
 
+	"github.com/gorilla/mux"
 	"github.com/subhankardas/go-microservices/products-service/data"
 )
 
@@ -16,30 +18,9 @@ func NewProductsHandler(log *log.Logger) *Products {
 	return &Products{log}
 }
 
-// Implement the ServeHTTP() method by Handler interface to make this struct a handler
-func (prd *Products) ServeHTTP(response http.ResponseWriter, request *http.Request) {
-
-	// Handle GET request and return list of products
-	if request.Method == http.MethodGet {
-		prd.log.Print("Handle GET request for products.")
-		prd.getProducts(response, request)
-		return
-	} else if request.Method == http.MethodPost {
-		prd.log.Print("Handle POST request for product.")
-		prd.addProduct(response, request)
-		return
-	} else if request.Method == http.MethodPut {
-		prd.log.Print("Handle PUT request for product.")
-		prd.updateProduct(response, request)
-		return
-	}
-
-	// Handle all other http requests and return not allowed header
-	response.WriteHeader(http.StatusMethodNotAllowed)
-}
-
 // Method to get list of products and write to response as json
-func (prd *Products) getProducts(response http.ResponseWriter, request *http.Request) {
+func (prd *Products) GetProducts(response http.ResponseWriter, request *http.Request) {
+	prd.log.Print("Handle GET request for products.")
 	products := data.GetProducts()
 
 	// Parse data to json and write to response
@@ -51,7 +32,8 @@ func (prd *Products) getProducts(response http.ResponseWriter, request *http.Req
 }
 
 // Method to add product to list
-func (prd *Products) addProduct(response http.ResponseWriter, request *http.Request) {
+func (prd *Products) AddProduct(response http.ResponseWriter, request *http.Request) {
+	prd.log.Print("Handle POST request for product.")
 	product := &data.Product{}
 
 	// Parse json data from request
@@ -67,11 +49,21 @@ func (prd *Products) addProduct(response http.ResponseWriter, request *http.Requ
 }
 
 // Method to update product data
-func (prd *Products) updateProduct(response http.ResponseWriter, request *http.Request) {
-	product := &data.Product{}
+func (prd *Products) UpdateProduct(response http.ResponseWriter, request *http.Request) {
+	prd.log.Print("Handle PUT request for product.")
+
+	// Get request variables
+	vars := mux.Vars(request)
+	id, err := strconv.Atoi(vars["id"])
+	if err != nil {
+		prd.log.Print("Invalid product ID passed for update.")
+		http.Error(response, "Invalid product ID.", http.StatusBadRequest)
+		return
+	}
 
 	// Parse json data from request
-	err := product.FromJSON(request.Body)
+	product := &data.Product{}
+	err = product.FromJSON(request.Body)
 	if err != nil {
 		prd.log.Print("Unable to parse product data.")
 		http.Error(response, "Invalid product data.", http.StatusBadRequest)
@@ -79,7 +71,7 @@ func (prd *Products) updateProduct(response http.ResponseWriter, request *http.R
 	}
 
 	// Update product data
-	err = data.UpdateProduct(product)
+	err = data.UpdateProduct(id, product)
 	if err != nil {
 		prd.log.Printf("[ERROR] %v!", err)
 		http.Error(response, "Unable to update, product not found.", http.StatusNotFound)

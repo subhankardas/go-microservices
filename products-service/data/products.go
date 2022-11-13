@@ -52,9 +52,8 @@ func AddProduct(product *Product) {
 }
 
 // Data access to update product
-func UpdateProduct(product *Product) error {
+func UpdateProduct(id int, product *Product) error {
 	var idx int = -1
-	id := product.ID
 	for i, prd := range products {
 		if prd.ID == id {
 			idx = i
@@ -64,6 +63,11 @@ func UpdateProduct(product *Product) error {
 	if idx < 0 {
 		return ErrorProductNotFound
 	}
+
+	// Update product details
+	product.ID = id
+	product.CreatedOn = products[idx].CreatedOn
+	product.UpdatedOn = time.Now().UTC()
 	products[idx] = product
 	return nil
 }

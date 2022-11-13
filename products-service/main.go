@@ -8,6 +8,7 @@ import (
 	"os/signal"
 	"time"
 
+	"github.com/gorilla/mux"
 	"github.com/subhankardas/go-microservices/products-service/handler"
 )
 
@@ -22,14 +23,16 @@ func main() {
 	// Create handlers
 	productsHandler := handler.NewProductsHandler(log)
 
-	// Setup handlers with custom serve mux
-	mux := http.NewServeMux()
-	mux.Handle("/products", productsHandler)
+	// Setup handlers with custom router
+	mux := mux.NewRouter()
+	mux.HandleFunc("/products", productsHandler.GetProducts).Methods(http.MethodGet)
+	mux.HandleFunc("/products", productsHandler.AddProduct).Methods(http.MethodPost)
+	mux.HandleFunc("/products/{id}", productsHandler.UpdateProduct).Methods(http.MethodPut)
 
 	// Create custom server and setup configs
 	server := &http.Server{
 		Addr:         SERVER_ADDR, // Server host and port
-		Handler:      mux,         // Custom mux
+		Handler:      mux,         // Custom router mux
 		IdleTimeout:  10 * time.Second,
 		ReadTimeout:  1 * time.Second,
 		WriteTimeout: 1 * time.Second,
