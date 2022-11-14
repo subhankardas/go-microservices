@@ -4,7 +4,10 @@ import (
 	"encoding/json"
 	"errors"
 	"io"
+	"regexp"
 	"time"
+
+	"github.com/go-playground/validator/v10"
 )
 
 var (
@@ -13,16 +16,33 @@ var (
 
 type Product struct {
 	ID          int       `json:"id"`
-	Name        string    `json:"name"`
+	Name        string    `json:"name" validate:"required"`
 	Description string    `json:"description"`
-	Price       float32   `json:"price"`
-	SKU         string    `json:"sku"`
-	CreatedOn   time.Time `json:"-"` // Ignore these fields when marshalling to json
+	Price       float32   `json:"price" validate:"gt=0"`
+	SKU         string    `json:"sku" validate:"required,sku"` // SKU has custom validator
+	CreatedOn   time.Time `json:"-"`                           // Ignore these fields when marshalling to json
 	UpdatedOn   time.Time `json:"-"`
 	DeletedOn   time.Time `json:"-"`
 }
 
 type Products []*Product
+
+// Validates data constraints
+func (prd *Product) Validate() error {
+	validate := validator.New()
+	validate.RegisterValidation("sku", validateSKU) // Custom validation for SKU
+	return validate.Struct(prd)
+}
+
+// Custom validator function to validate SKU
+func validateSKU(field validator.FieldLevel) bool {
+	value := field.Field().String()
+	matched, err := regexp.MatchString("COFF[0-9]+", value) // SKU format must be COFF[0-9]+
+	if err != nil {
+		return false
+	}
+	return matched
+}
 
 // Reads json data from request
 func (prd *Product) FromJSON(reader io.Reader) error {

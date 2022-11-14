@@ -7,6 +7,7 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/subhankardas/go-microservices/products-service/data"
+	"github.com/subhankardas/go-microservices/products-service/middleware"
 )
 
 type Products struct {
@@ -34,15 +35,9 @@ func (prd *Products) GetProducts(response http.ResponseWriter, request *http.Req
 // Method to add product to list
 func (prd *Products) AddProduct(response http.ResponseWriter, request *http.Request) {
 	prd.log.Print("Handle POST request for product.")
-	product := &data.Product{}
 
-	// Parse json data from request
-	err := product.FromJSON(request.Body)
-	if err != nil {
-		prd.log.Print("Unable to parse product data.")
-		http.Error(response, "Invalid product data.", http.StatusBadRequest)
-		return
-	}
+	// Get data from request and map to product
+	product := request.Context().Value(middleware.KeyProduct{}).(*data.Product)
 
 	// Add product data
 	data.AddProduct(product)
@@ -61,14 +56,8 @@ func (prd *Products) UpdateProduct(response http.ResponseWriter, request *http.R
 		return
 	}
 
-	// Parse json data from request
-	product := &data.Product{}
-	err = product.FromJSON(request.Body)
-	if err != nil {
-		prd.log.Print("Unable to parse product data.")
-		http.Error(response, "Invalid product data.", http.StatusBadRequest)
-		return
-	}
+	// Get data from request and map to product
+	product := request.Context().Value(middleware.KeyProduct{}).(*data.Product)
 
 	// Update product data
 	err = data.UpdateProduct(id, product)

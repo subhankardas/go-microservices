@@ -10,6 +10,7 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/subhankardas/go-microservices/products-service/handler"
+	"github.com/subhankardas/go-microservices/products-service/middleware"
 )
 
 const (
@@ -23,11 +24,14 @@ func main() {
 	// Create handlers
 	productsHandler := handler.NewProductsHandler(log)
 
+	// Create new middleware
+	middleware := middleware.New(log)
+
 	// Setup handlers with custom router
 	mux := mux.NewRouter()
 	mux.HandleFunc("/products", productsHandler.GetProducts).Methods(http.MethodGet)
-	mux.HandleFunc("/products", productsHandler.AddProduct).Methods(http.MethodPost)
-	mux.HandleFunc("/products/{id}", productsHandler.UpdateProduct).Methods(http.MethodPut)
+	mux.HandleFunc("/products", middleware.ProductsMW(productsHandler.AddProduct)).Methods(http.MethodPost)
+	mux.HandleFunc("/products/{id}", middleware.ProductsMW(productsHandler.UpdateProduct)).Methods(http.MethodPut)
 
 	// Create custom server and setup configs
 	server := &http.Server{
