@@ -19,7 +19,15 @@ func NewProductsHandler(log *log.Logger) *Products {
 	return &Products{log}
 }
 
-// Method to get list of products and write to response as json
+// Method to get list of products and write to response as json.
+// @Summary      Get list of products.
+// @Description  Returns list of all the products in store.
+// @Tags         products
+// @Accept       json
+// @Produce      json
+// @Success      200  {object}  data.Products
+// @Failure      500  {string}  string
+// @Router       /products [get]
 func (prd *Products) GetProducts(response http.ResponseWriter, request *http.Request) {
 	prd.log.Print("Handle GET request for products.")
 	products := data.GetProducts()
@@ -32,7 +40,16 @@ func (prd *Products) GetProducts(response http.ResponseWriter, request *http.Req
 	}
 }
 
-// Method to add product to list
+// Method to add new product to list.
+// @Summary 	Add new product.
+// @Description Adds a new product to the store.
+// @Tags        products
+// @Accept     	json
+// @Produce     json
+// @Param product body data.Product true "Product Details"
+// @Success     200  {object}  string
+// @Failure     400  {object}  string
+// @Router 		/products [post]
 func (prd *Products) AddProduct(response http.ResponseWriter, request *http.Request) {
 	prd.log.Print("Handle POST request for product.")
 
@@ -43,7 +60,18 @@ func (prd *Products) AddProduct(response http.ResponseWriter, request *http.Requ
 	data.AddProduct(product)
 }
 
-// Method to update product data
+// Method to update product data.
+// @Summary 	Update existing product.
+// @Description Update product details to the store.
+// @Tags        products
+// @Accept     	json
+// @Produce     json
+// @Param       id	path	int  true	"Product ID"
+// @Param product body data.Product true "Product Details"
+// @Success     200  {object}  string
+// @Failure     400  {object}  string
+// @Failure     404  {object}  string
+// @Router 		/products/{id} [put]
 func (prd *Products) UpdateProduct(response http.ResponseWriter, request *http.Request) {
 	prd.log.Print("Handle PUT request for product.")
 

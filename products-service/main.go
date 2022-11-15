@@ -1,3 +1,13 @@
+// @title           Products Service API
+// @version         1.0.0
+// @description     API documentation for the products service.
+
+// @contact.name   Subhankar Das
+// @contact.url    https://github.com/subhankardas
+// @contact.email  subhankardas831@gmail.com
+
+// @host      localhost:8080
+// @BasePath  /api
 package main
 
 import (
@@ -29,9 +39,9 @@ func main() {
 
 	// Setup handlers with custom router
 	mux := mux.NewRouter()
-	mux.HandleFunc("/products", productsHandler.GetProducts).Methods(http.MethodGet)
-	mux.HandleFunc("/products", middleware.ProductsMW(productsHandler.AddProduct)).Methods(http.MethodPost)
-	mux.HandleFunc("/products/{id}", middleware.ProductsMW(productsHandler.UpdateProduct)).Methods(http.MethodPut)
+	mux.HandleFunc("/api/products", productsHandler.GetProducts).Methods(http.MethodGet)
+	mux.HandleFunc("/api/products", middleware.ProductsMW(productsHandler.AddProduct)).Methods(http.MethodPost)
+	mux.HandleFunc("/api/products/{id}", middleware.ProductsMW(productsHandler.UpdateProduct)).Methods(http.MethodPut)
 
 	// Create custom server and setup configs
 	server := &http.Server{

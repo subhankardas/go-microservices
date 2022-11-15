@@ -15,11 +15,11 @@ var (
 )
 
 type Product struct {
-	ID          int       `json:"id"`
-	Name        string    `json:"name" validate:"required"`
-	Description string    `json:"description"`
-	Price       float32   `json:"price" validate:"gt=0"`
-	SKU         string    `json:"sku" validate:"required,sku"` // SKU has custom validator
+	ID          int       `json:"id"`                          // Product ID
+	Name        string    `json:"name" validate:"required"`    // Product name
+	Description string    `json:"description"`                 // Description
+	Price       float32   `json:"price" validate:"gt=0"`       // Selling price
+	SKU         string    `json:"sku" validate:"required,sku"` // Stock ID, SKU has custom validator
 	CreatedOn   time.Time `json:"-"`                           // Ignore these fields when marshalling to json
 	UpdatedOn   time.Time `json:"-"`
 	DeletedOn   time.Time `json:"-"`
