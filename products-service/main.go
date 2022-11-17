@@ -18,6 +18,7 @@ import (
 	"os/signal"
 	"time"
 
+	gohandlers "github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
 	"github.com/subhankardas/go-microservices/products-service/handler"
 	"github.com/subhankardas/go-microservices/products-service/middleware"
@@ -37,16 +38,23 @@ func main() {
 	// Create new middleware
 	middleware := middleware.New(log)
 
-	// Setup handlers with custom router
-	mux := mux.NewRouter()
-	mux.HandleFunc("/api/products", productsHandler.GetProducts).Methods(http.MethodGet)
-	mux.HandleFunc("/api/products", middleware.ProductsMW(productsHandler.AddProduct)).Methods(http.MethodPost)
-	mux.HandleFunc("/api/products/{id}", middleware.ProductsMW(productsHandler.UpdateProduct)).Methods(http.MethodPut)
+	// Setup handlers with custom sub-routers
+	router := mux.NewRouter()
+	GET := router.Methods(http.MethodGet).Subrouter()
+	POST := router.Methods(http.MethodPost).Subrouter()
+	PUT := router.Methods(http.MethodPut).Subrouter()
+
+	GET.HandleFunc("/api/products", productsHandler.GetProducts)
+	POST.HandleFunc("/api/products", middleware.ProductsMW(productsHandler.AddProduct))
+	PUT.HandleFunc("/api/products/{id}", middleware.ProductsMW(productsHandler.UpdateProduct))
+
+	// Setup CORS handler (allow origin running the frontend, use * to allow all origins)
+	cors := gohandlers.CORS(gohandlers.AllowedOrigins([]string{"http://localhost:9090"}))
 
 	// Create custom server and setup configs
 	server := &http.Server{
-		Addr:         SERVER_ADDR, // Server host and port
-		Handler:      mux,         // Custom router mux
+		Addr:         SERVER_ADDR,  // Server host and port
+		Handler:      cors(router), // Custom router mux with CORS
 		IdleTimeout:  10 * time.Second,
 		ReadTimeout:  1 * time.Second,
 		WriteTimeout: 1 * time.Second,
