@@ -30,6 +30,8 @@ func NewProductsHandler(log *log.Logger) *Products {
 // @Router       /products [get]
 func (prd *Products) GetProducts(response http.ResponseWriter, request *http.Request) {
 	prd.log.Print("Handle GET request for products.")
+	response.Header().Add("Content-Type", "application/json")
+
 	products := data.GetProducts()
 
 	// Parse data to json and write to response

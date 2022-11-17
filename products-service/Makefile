@@ -13,3 +13,12 @@ install-swagger:
 
 swagger-generate:
 	swag init
+
+# ----- API CLIENT GENERATION FROM SWAGGER ----- #
+install-go-swagger:
+	go get github.com/go-swagger/go-swagger/cmd/swagger
+	go install github.com/go-swagger/go-swagger/cmd/swagger
+
+client-generate:
+	swagger generate client -f ./docs/swagger.yaml -A products-service
+	go mod tidy
