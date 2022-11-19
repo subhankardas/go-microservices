@@ -34,6 +34,7 @@ func main() {
 
 	// Create handlers
 	productsHandler := handler.NewProductsHandler(log)
+	filesHandler := handler.NewFilesHandler(log)
 
 	// Create new middleware
 	middleware := middleware.New(log)
@@ -47,6 +48,8 @@ func main() {
 	GET.HandleFunc("/api/products", productsHandler.GetProducts)
 	POST.HandleFunc("/api/products", middleware.ProductsMW(productsHandler.AddProduct))
 	PUT.HandleFunc("/api/products/{id}", middleware.ProductsMW(productsHandler.UpdateProduct))
+	POST.HandleFunc("/images", filesHandler.UploadFile)
+	GET.Handle("/images/{id:[0-9]+}/{filename:[a-zA-Z]+\\.[a-z]{3}}", http.StripPrefix("/images/", http.FileServer(http.Dir("./uploads"))))
 
 	// Setup CORS handler (allow origin running the frontend, use * to allow all origins)
 	cors := gohandlers.CORS(gohandlers.AllowedOrigins([]string{"http://localhost:9090"}))
