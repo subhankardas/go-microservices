@@ -21,7 +21,7 @@ import (
 	gohandlers "github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
 	"github.com/subhankardas/go-microservices/products-service/handler"
-	"github.com/subhankardas/go-microservices/products-service/middleware"
+	midware "github.com/subhankardas/go-microservices/products-service/middleware"
 )
 
 const (
@@ -37,7 +37,8 @@ func main() {
 	filesHandler := handler.NewFilesHandler(log)
 
 	// Create new middleware
-	middleware := middleware.New(log)
+	middleware := midware.New(log)
+	gzipMiddleware := midware.NewGZipHandler()
 
 	// Setup handlers with custom sub-routers
 	router := mux.NewRouter()
@@ -48,8 +49,14 @@ func main() {
 	GET.HandleFunc("/api/products", productsHandler.GetProducts)
 	POST.HandleFunc("/api/products", middleware.ProductsMW(productsHandler.AddProduct))
 	PUT.HandleFunc("/api/products/{id}", middleware.ProductsMW(productsHandler.UpdateProduct))
+
+	// Image handling APIs
 	POST.HandleFunc("/images", filesHandler.UploadFile)
-	GET.Handle("/images/{id:[0-9]+}/{filename:[a-zA-Z]+\\.[a-z]{3}}", http.StripPrefix("/images/", http.FileServer(http.Dir("./uploads"))))
+	GET.Handle("/images/{id:[0-9]+}/{filename:[a-zA-Z]+\\.[a-z]{3}}", http.StripPrefix("/images/",
+		http.FileServer(http.Dir("./uploads"))))
+
+	// Using GZip middleware for GET requests
+	GET.Use(gzipMiddleware.GZipperMW)
 
 	// Setup CORS handler (allow origin running the frontend, use * to allow all origins)
 	cors := gohandlers.CORS(gohandlers.AllowedOrigins([]string{"http://localhost:9090"}))
