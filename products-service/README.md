@@ -26,6 +26,7 @@ make client-generate
 
 #### Features
 The basic functionalities include performing crud operations on few coffee products. The curl commands to test them are given below.
+
 **1. GET - Fetch products list**
 ```
 curl -X GET \
@@ -72,6 +73,6 @@ curl -X GET \
   --header 'Accept-Encoding: gzip'
 ```
 
-### Reference
+### References
 1. [Building Microservices with Go - 
 Nic Jackson](https://youtu.be/VzBGi_n65iU)
