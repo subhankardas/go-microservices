@@ -1,6 +1,6 @@
 # ----- RUN SERVICE LOCALLY ----- #
-# docker compose -f "docker\docker-compose.yml" up
 run-service:
+	docker compose -f "docker\docker-compose.yml" up
 	air
 
 # ----- RUN UNIT TESTS ----- #

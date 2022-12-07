@@ -21,10 +21,11 @@ func NewMenuController(logger core.Logger) *MenuController {
 	}
 }
 
-// Implementations for MenuController interface //
+// Implementations for MenuController struct //
 
 func (ctrl *MenuController) GetAllMenu(ctx *gin.Context) {
-	menu := ctrl.service.GetAllMenu()
+	trxId := ctx.GetString(core.TRANSACTION_ID)
+	menu := ctrl.service.GetAllMenu(trxId)
 	ctx.JSON(http.StatusOK, gin.H{
 		"menu": menu,
 	})

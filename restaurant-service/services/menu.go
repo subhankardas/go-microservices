@@ -7,7 +7,7 @@ import (
 )
 
 type MenuService interface {
-	GetAllMenu() models.Menu
+	GetAllMenu(trxId string) models.Menu
 }
 
 type menuService struct {
@@ -22,7 +22,7 @@ func NewMenuService(logger core.Logger) MenuService {
 
 // Implementations for MenuService interface //
 
-func (service *menuService) GetAllMenu() models.Menu {
-	service.log.Debug("Getting menu details from DB.")
+func (service *menuService) GetAllMenu(trxId string) models.Menu {
+	service.log.Debug(trxId, "Getting menu details from DB.")
 	return data.GetAllMenu()
 }
