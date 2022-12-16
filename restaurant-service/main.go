@@ -22,10 +22,11 @@ func main() {
 		fmt.Println("Error loading .env file")
 	}
 
-	// Create gin router
+	// Create http router with required middleware
 	router := gin.New()
-	router.Use(middleware.Logging(logger), gin.Recovery())
+	router.Use(middleware.Logging(), gin.Recovery())
 
+	// Setup API routes and controllers
 	setupAPIs(router, logger)
 
 	// Run sever on default port or PORT environment variable
@@ -38,4 +39,5 @@ func setupAPIs(router *gin.Engine, logger core.Logger) {
 
 	// Setup API routes
 	router.GET("/api/menu", menuCtrl.GetAllMenu)
+	router.POST("/api/menu", menuCtrl.AddMenu)
 }

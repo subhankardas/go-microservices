@@ -7,22 +7,28 @@ import (
 )
 
 type MenuService interface {
-	GetAllMenu(trxId string) models.Menu
+	GetAllMenu(trxId string) ([]models.Menu, error)
+	AddMenu(trxId string, menu *models.Menu) error
 }
 
 type menuService struct {
-	log core.Logger
+	log  core.Logger
+	data data.MenuData
 }
 
 func NewMenuService(logger core.Logger) MenuService {
 	return &menuService{
-		log: logger,
+		log:  logger,
+		data: data.NewMenuData(logger),
 	}
 }
 
 // Implementations for MenuService interface //
 
-func (service *menuService) GetAllMenu(trxId string) models.Menu {
-	service.log.Debug(trxId, "Getting menu details from DB.")
-	return data.GetAllMenu()
+func (service *menuService) GetAllMenu(trxId string) ([]models.Menu, error) {
+	return service.data.GetAllMenu(trxId)
+}
+
+func (service *menuService) AddMenu(trxId string, menu *models.Menu) error {
+	return service.data.AddMenu(trxId, menu)
 }

@@ -12,11 +12,15 @@ This is simple Go based microservice with *RESTful CRUD APIs* implementation usi
 #### Commands
 The makefile consists all important commands given below.
 
-1. Run service locally with hot reloading using Air
+1. Start docker containers for *postgresDB*
+   ```
+   docker compose -f "docker-compose.yml" up
+   ```
+2. Run service locally with hot reloading using *Air*
     ```
     make run-service
     ```
-2. Run unit tests
+3. Run unit tests
     ```
     make run-tests
     ```
@@ -39,6 +43,23 @@ The basic functionalities include performing CRUD operations of a restaurant. Th
 ```
 curl -X GET \
   'localhost:8080/api/menu'
+```
+**2. POST - Add new menu**
+```
+curl -X POST \
+  'localhost:8080/api/menu' \
+  --header 'Accept: */*' \
+  --header 'Content-Type: application/json' \
+  --data-raw '{
+  "title": "Breakfast Menu",
+  "items": [
+    {
+      "name": "Sandwich",
+      "price": 1.2,
+      "description": " text!"
+    }
+  ]
+}'
 ```
 
 ### References
