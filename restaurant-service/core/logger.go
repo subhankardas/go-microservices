@@ -115,20 +115,20 @@ type LogConfig struct {
 	Level    Level
 }
 
-// Constructor for logger that ensures only single instance is created for core logger.
+// Constructor for core logger with configurable file path and default log level.
 func NewLogger(config LogConfig) Logger {
 	if logger == nil { // Need to create new instance
 		lock.Lock()
 		defer lock.Unlock()
 
 		if logger == nil { // Instance not created by other routines even after locking
-			logger = newLoggerImpl(config) // Hence create logger instance
+			logger = newLoggerImpl(config) // Hence create singleton logger instance
 		}
 	}
 	return logger
 }
 
-// Constructor to create new core logger.
+// Creates new logger implementation instance.
 func newLoggerImpl(cfg LogConfig) *loggerImpl {
 	// Create logger config and encoders
 	config := getLogEncoderConfig()

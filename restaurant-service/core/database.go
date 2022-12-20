@@ -1,11 +1,8 @@
 package core
 
 import (
-	"fmt"
-	"os"
 	"sync"
 
-	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
 
@@ -26,19 +23,23 @@ type database struct {
 var conn = &sync.Mutex{}
 var db Database
 
+// Construct for database instance.
 func NewDatabase(log Logger) Database {
 	if db == nil {
 		conn.Lock()
 		defer conn.Unlock()
 
 		if db == nil {
-			conn, err := newDBConnection()
-			if err != nil {
-				log.Fatalf(DB_CONNECTION_ERROR, "Could not connect to DB, error: %v", err)
+			var source *gorm.DB
+			var err error
+
+			// Create new PostgresDB connection
+			if source, err = newPostgresDbConnection(); err != nil {
+				log.Fatalf(DB_CONNECTION_ERROR, "error: %v, cause: %v", UNABLE_TO_CONNECT_DB, err)
 			}
-			db = &database{
+			db = &database{ // Create singleton instance
 				log:    log,
-				source: conn,
+				source: source,
 			}
 		}
 	}
@@ -46,23 +47,11 @@ func NewDatabase(log Logger) Database {
 	return db
 }
 
-func newDBConnection() (*DB, error) {
-	host := os.Getenv("DB_HOST")
-	port := os.Getenv("DB_PORT")
-	username := os.Getenv("DB_USER")
-	password := os.Getenv("DB_PASSWORD")
-	databaseName := os.Getenv("DB_NAME")
-
-	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=disable TimeZone=Africa/Lagos", host, username, password, databaseName, port)
-
-	return gorm.Open(postgres.Open(dsn), &gorm.Config{})
-}
-
 // Implementations for Database interface //
 
 func (db *database) AutoMigrate(models ...interface{}) {
 	if err := db.source.AutoMigrate(models...); err != nil {
-		db.log.Errorf(DB_MIGRATION_ERROR, "Error migrating model %#v, error: %v", models, err)
+		db.log.Errorf(DB_MIGRATION_ERROR, "error: failed migrating model %#v, cause: %v", models, err)
 	}
 }
 

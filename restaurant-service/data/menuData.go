@@ -1,11 +1,8 @@
 package data
 
 import (
-	"errors"
-
 	"github.com/subhankardas/go-microservices/restaurant-service/core"
 	"github.com/subhankardas/go-microservices/restaurant-service/models"
-	"github.com/subhankardas/go-microservices/restaurant-service/utils"
 )
 
 type MenuData interface {
@@ -18,6 +15,7 @@ type menuData struct {
 	db  core.Database
 }
 
+// Constructor for menu data layer.
 func NewMenuData(logger core.Logger) MenuData {
 	db := core.NewDatabase(logger)
 	migrate(db)
@@ -28,6 +26,7 @@ func NewMenuData(logger core.Logger) MenuData {
 	}
 }
 
+// Migrate required models.
 func migrate(db core.Database) {
 	db.AutoMigrate(&models.Menu{}, &models.Item{})
 }
@@ -36,18 +35,22 @@ func migrate(db core.Database) {
 
 func (data *menuData) GetAllMenu(trxId string) ([]models.Menu, error) {
 	menus := []models.Menu{}
+
+	// Preload items, then load all menu from DB
 	if _, err := data.db.Preload("Items").Find(&menus); err != nil {
-		data.log.Errorf(trxId, "Unable to read list of all menu from DB, error: %v", err)
-		return nil, errors.New("unable to read list of all menu from DB")
+		data.log.Errorf(trxId, "error: %v, cause: %v", core.UNABLE_TO_READ_ALL_MENU_FROM_DB, err)
+		return nil, core.ErrUnableToReadAllMenuFromDb
 	}
+
 	return menus, nil
 }
 
 func (data *menuData) AddMenu(trxId string, menu *models.Menu) error {
-	menu.ID = utils.NewID()
+	// Add new menu details to DB
 	if _, err := data.db.Create(&menu); err != nil {
-		data.log.Errorf(trxId, "Unable to add menu details to DB, error: %v", err)
-		return errors.New("unable to add menu details to DB")
+		data.log.Errorf(trxId, "error: %v, cause: %v", core.UNABLE_TO_ADD_MENU_TO_DB, err)
+		return core.ErrUnableToAddMenuToDb
 	}
+
 	return nil
 }
