@@ -1,8 +1,6 @@
 package main
 
 import (
-	"net/http"
-	"runtime"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -10,16 +8,18 @@ import (
 	"github.com/subhankardas/go-microservices/restaurant-service/controllers"
 	"github.com/subhankardas/go-microservices/restaurant-service/core"
 	"github.com/subhankardas/go-microservices/restaurant-service/middleware"
+	"github.com/subhankardas/go-microservices/restaurant-service/models"
 )
 
 var logger core.Logger
+var config *models.Config
 
 func init() {
+	// Load config properties
+	config = core.LoadConfig("config.yml")
+
 	// Create new logger
-	logger = core.NewLogger(core.LogConfig{
-		Filepath: "log.json",
-		Level:    core.DebugLevel,
-	})
+	logger = core.NewLogger(config.Log)
 
 	// Load environment variables
 	if err := env.Load(); err != nil {
@@ -47,11 +47,9 @@ func serve() {
 
 func setupAPIs(router *gin.Engine) {
 	// Initialize controllers
-	menuCtrl := controllers.NewMenuController(logger)
+	menuCtrl := controllers.NewMenuController(config, logger)
 
 	// Setup API routes
 	router.GET("/api/menu", menuCtrl.GetAllMenu)
 	router.POST("/api/menu", menuCtrl.AddMenu)
-
-	router.GET("/gr", func(ctx *gin.Context) { ctx.String(http.StatusOK, "num: %v", runtime.NumGoroutine()) })
 }

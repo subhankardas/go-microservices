@@ -11,18 +11,20 @@ type MenuData interface {
 }
 
 type menuData struct {
-	log core.Logger
-	db  core.Database
+	config *models.Config
+	log    core.Logger
+	db     core.Database
 }
 
 // Constructor for menu data layer.
-func NewMenuData(logger core.Logger) MenuData {
-	db := core.NewDatabase(logger)
+func NewMenuData(config *models.Config, logger core.Logger) MenuData {
+	db := core.NewDatabase(config, logger)
 	migrate(db)
 
 	return &menuData{
-		log: logger,
-		db:  db,
+		config: config,
+		log:    logger,
+		db:     db,
 	}
 }
 

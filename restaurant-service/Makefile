@@ -1,7 +1,7 @@
 # ----- RUN SERVICE LOCALLY ----- #
-run-service:
+dev-run-service:
 	air
 
 # ----- RUN UNIT TESTS ----- #
-run-tests:
+run-int-tests:
 	go test ./...

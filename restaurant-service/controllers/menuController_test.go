@@ -17,29 +17,33 @@ import (
 	"github.com/subhankardas/go-microservices/restaurant-service/models"
 )
 
+var config *models.Config
+var logger core.Logger
+var router *gin.Engine
+
 // Setup required dependencies here.
-func Setup() (*gin.Engine, core.Logger) {
+func Setup() {
+	// Load config properties
+	config = core.LoadConfig("../config.yml")
+
+	// Create new logger
+	logger = core.NewLogger(config.Log)
+
 	// Load environment variables
 	if err := env.Load("../.env"); err != nil {
 		fmt.Println("Error loading .env file")
 	}
 
-	// Create logger dependency
-	logger := core.NewLogger(core.LogConfig{
-		Filepath: "../log.json",
-		Level:    core.DebugLevel,
-	})
-
-	return gin.Default(), logger
+	router = gin.Default()
 }
 
 // Test GET endpoint for fetching list of all menus.
 func TestGetAllMenu(t *testing.T) {
 	t.Run("api_returns_list_of_all_menus", func(t *testing.T) {
-		// GIVEN
-		router, logger := Setup()
-		menuCtrl := NewMenuController(logger)
+		Setup()
 
+		// GIVEN
+		menuCtrl := NewMenuController(config, logger)
 		router.GET("/api/menu", menuCtrl.GetAllMenu)
 
 		// WHEN
@@ -62,10 +66,10 @@ func TestGetAllMenu(t *testing.T) {
 
 func TestAddMenu(t *testing.T) {
 	t.Run("api_adds_new_menu_details", func(t *testing.T) {
-		// GIVEN
-		router, logger := Setup()
-		menuCtrl := NewMenuController(logger)
+		Setup()
 
+		// GIVEN
+		menuCtrl := NewMenuController(config, logger)
 		router.POST("/api/menu", menuCtrl.AddMenu)
 
 		menu := models.Menu{
@@ -92,7 +96,7 @@ func TestAddMenu(t *testing.T) {
 		err2 := json.Unmarshal(body, &menuData)
 
 		// THEN
-		assert.Equal(t, http.StatusOK, response.Code)
+		assert.Equal(t, http.StatusCreated, response.Code)
 		assert.ErrorIs(t, err1, nil)
 		assert.ErrorIs(t, err2, nil)
 		assert.Equal(t, 32, len(menuData.ID))

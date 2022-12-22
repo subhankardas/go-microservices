@@ -5,6 +5,7 @@ import (
 	"os"
 	"sync"
 
+	"github.com/subhankardas/go-microservices/restaurant-service/models"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 )
@@ -110,13 +111,8 @@ func (log *loggerImpl) Warn(id string, msg string, fields ...Field) {
 var lock = &sync.Mutex{}
 var logger *loggerImpl // Singleton logger instance
 
-type LogConfig struct {
-	Filepath string
-	Level    Level
-}
-
 // Constructor for core logger with configurable file path and default log level.
-func NewLogger(config LogConfig) Logger {
+func NewLogger(config models.Log) Logger {
 	if logger == nil { // Need to create new instance
 		lock.Lock()
 		defer lock.Unlock()
@@ -129,7 +125,7 @@ func NewLogger(config LogConfig) Logger {
 }
 
 // Creates new logger implementation instance.
-func newLoggerImpl(cfg LogConfig) *loggerImpl {
+func newLoggerImpl(cfg models.Log) *loggerImpl {
 	// Create logger config and encoders
 	config := getLogEncoderConfig()
 	fileEncoder := zapcore.NewJSONEncoder(config)

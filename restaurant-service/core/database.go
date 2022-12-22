@@ -3,6 +3,7 @@ package core
 import (
 	"sync"
 
+	"github.com/subhankardas/go-microservices/restaurant-service/models"
 	"gorm.io/gorm"
 )
 
@@ -24,7 +25,7 @@ var conn = &sync.Mutex{}
 var db Database
 
 // Construct for database instance.
-func NewDatabase(log Logger) Database {
+func NewDatabase(config *models.Config, log Logger) Database {
 	if db == nil {
 		conn.Lock()
 		defer conn.Unlock()
@@ -34,7 +35,7 @@ func NewDatabase(log Logger) Database {
 			var err error
 
 			// Create new PostgresDB connection
-			if source, err = newPostgresDbConnection(); err != nil {
+			if source, err = newPostgresDbConnection(config); err != nil {
 				log.Fatalf(DB_CONNECTION_ERROR, "error: %v, cause: %v", UNABLE_TO_CONNECT_DB, err)
 			}
 			db = &database{ // Create singleton instance

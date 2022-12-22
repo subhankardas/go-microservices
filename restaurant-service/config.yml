@@ -1,0 +1,10 @@
+log:
+  filepath: "log.json"
+  level: "debug"
+
+database:
+  name: "restaurant_service"
+  host: "host.docker.internal"
+  port: 5432
+  username: "pgadmin_user"
+  password: "pgadmin@123"
