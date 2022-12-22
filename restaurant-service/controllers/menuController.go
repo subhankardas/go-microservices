@@ -56,5 +56,5 @@ func (ctrl *menuController) AddMenu(ctx *gin.Context) {
 	}
 
 	// Success response
-	ctx.JSON(http.StatusOK, menu)
+	ctx.JSON(http.StatusCreated, menu)
 }

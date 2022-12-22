@@ -6,8 +6,9 @@ import (
 	"github.com/subhankardas/go-microservices/restaurant-service/utils"
 )
 
-func Logging() gin.HandlerFunc {
+func LoggingMW() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
+		// Set transaction ID used for logging and audit
 		ctx.Set(core.TRANSACTION_ID, utils.NewUUID())
 		ctx.Next()
 	}
