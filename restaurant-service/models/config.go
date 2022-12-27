@@ -1,24 +1,35 @@
 package models
 
-import "go.uber.org/zap/zapcore"
+import (
+	"time"
+
+	"go.uber.org/zap/zapcore"
+)
 
 type LogLevel = zapcore.Level
 
 type Config struct {
-	Log      Log      `yaml:"log"`
-	Database Database `yaml:"database"`
+	Server   Server
+	Log      Log
+	Database Database
+}
+
+type Server struct {
+	Port                        string
+	RequestTimeoutInMillisecond uint16
+	RequestTimeoutDuration      time.Duration
 }
 
 type Log struct {
-	Filepath  string   `yaml:"filepath"`
-	LevelName string   `yaml:"level"`
-	Level     LogLevel `yaml:"-"`
+	Filepath string
+	Level    string
+	LogLevel LogLevel
 }
 
 type Database struct {
-	Name     string `yaml:"name"`
-	Host     string `yaml:"host"`
-	Port     uint16 `yaml:"port"`
-	Username string `yaml:"username"`
-	Password string `yaml:"password"`
+	Name     string
+	Host     string
+	Port     uint16
+	Username string
+	Password string
 }

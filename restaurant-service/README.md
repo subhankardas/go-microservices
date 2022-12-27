@@ -18,7 +18,7 @@ The makefile consists all important commands given below.
    ```
 2. Run service locally with hot reloading using *Air*
     ```
-    make run-service
+    make run-service-<profile-name>
     ```
 3. Run unit tests
     ```

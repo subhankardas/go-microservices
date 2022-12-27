@@ -135,7 +135,7 @@ func newLoggerImpl(cfg models.Log) *loggerImpl {
 	logFile, _ := os.OpenFile(cfg.Filepath, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 
 	// Create zap core with file and console encoders with default log level
-	defaultLogLevel := cfg.Level
+	defaultLogLevel := cfg.LogLevel
 	core := zapcore.NewTee(
 		zapcore.NewCore(fileEncoder, zapcore.AddSync(logFile), defaultLogLevel),
 		zapcore.NewCore(consoleEncoder, zapcore.AddSync(os.Stdout), defaultLogLevel),

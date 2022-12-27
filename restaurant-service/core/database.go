@@ -31,13 +31,12 @@ func NewDatabase(config *models.Config, log Logger) Database {
 		defer conn.Unlock()
 
 		if db == nil {
-			var source *gorm.DB
-			var err error
-
 			// Create new PostgresDB connection
-			if source, err = newPostgresDbConnection(config); err != nil {
-				log.Fatalf(DB_CONNECTION_ERROR, "error: %v, cause: %v", UNABLE_TO_CONNECT_DB, err)
+			source, err := newPostgresDbConnection(config)
+			if err != nil {
+				log.Fatalf(DB_ERROR, "error: %v, cause: %v", UNABLE_TO_CONNECT_DB, err)
 			}
+
 			db = &database{ // Create singleton instance
 				log:    log,
 				source: source,
@@ -52,7 +51,7 @@ func NewDatabase(config *models.Config, log Logger) Database {
 
 func (db *database) AutoMigrate(models ...interface{}) {
 	if err := db.source.AutoMigrate(models...); err != nil {
-		db.log.Errorf(DB_MIGRATION_ERROR, "error: failed migrating model %#v, cause: %v", models, err)
+		db.log.Errorf(DB_ERROR, "error: failed migrating model %#v, cause: %v", models, err)
 	}
 }
 

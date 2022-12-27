@@ -7,17 +7,19 @@ const (
 
 // Error message ID constants
 const (
-	ENV_LOAD_ERROR      = "ENV_LOAD_ERROR"
-	CONFIG_LOAD_ERROR   = "CONFIG_LOAD_ERROR"
-	DB_CONNECTION_ERROR = "DB_CONNECTION_ERROR"
-	DB_MIGRATION_ERROR  = "DB_MIGRATION_ERROR"
+	ENV_ERROR    = "ENV_ERROR"
+	CONFIG_ERROR = "CONFIG_ERROR"
+	SERVER_ERROR = "SERVER_ERROR"
+	DB_ERROR     = "DB_ERROR"
 )
 
 // Error messages
 const (
 	UNABLE_TO_LOAD_ENV              = "unable to load environment"
 	UNABLE_TO_LOAD_CONFIG_FILE      = "unable to load config file"
+	UNABLE_TO_CREATE_CIPHER         = "unable to create cipher from key"
 	UNABLE_TO_READ_CONFIG_FILE      = "unable to read config properties"
+	UNABLE_TO_RUN_SERVER            = "unable to run server"
 	INVALID_REQUEST_DATA            = "invalid request data"
 	UNABLE_TO_CONNECT_DB            = "unable to connect to database"
 	UNABLE_TO_READ_ALL_MENU_FROM_DB = "unable to read list of all menu from database"

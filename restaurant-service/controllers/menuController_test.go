@@ -3,7 +3,6 @@ package controllers
 import (
 	"bytes"
 	"encoding/json"
-	"fmt"
 	"io"
 
 	"net/http"
@@ -11,7 +10,6 @@ import (
 	"testing"
 
 	"github.com/gin-gonic/gin"
-	env "github.com/joho/godotenv"
 	"github.com/stretchr/testify/assert"
 	"github.com/subhankardas/go-microservices/restaurant-service/core"
 	"github.com/subhankardas/go-microservices/restaurant-service/models"
@@ -24,15 +22,10 @@ var router *gin.Engine
 // Setup required dependencies here.
 func Setup() {
 	// Load config properties
-	config = core.LoadConfig("../config.yml")
+	config = core.LoadConfig("../configs/", "qa.config", "yml")
 
 	// Create new logger
 	logger = core.NewLogger(config.Log)
-
-	// Load environment variables
-	if err := env.Load("../.env"); err != nil {
-		fmt.Println("Error loading .env file")
-	}
 
 	router = gin.Default()
 }
