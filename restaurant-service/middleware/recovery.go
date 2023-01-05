@@ -20,10 +20,10 @@ func NewRecoveryMW(log core.Logger) *RecoveryMW {
 func (mw *RecoveryMW) RecoveryMW(ctx *gin.Context, recovered interface{}) {
 	trxId := ctx.GetString(core.TRANSACTION_ID)
 	if err, ok := recovered.(string); ok {
-		mw.log.Errorf(trxId, "error: recovered panic, cause: %s", err)
+		mw.log.Errorf(trxId, "error: known panic, cause: %s", err)
 		ctx.JSON(http.StatusInternalServerError, models.NewErrorResponse(errors.New(err)))
 	} else {
-		mw.log.Errorf(trxId, "error: unable to recover panic, cause: %s", recovered)
+		mw.log.Errorf(trxId, "error: unknown panic, cause: %s", recovered)
 	}
 	ctx.AbortWithStatus(http.StatusInternalServerError)
 }

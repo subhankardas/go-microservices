@@ -60,3 +60,43 @@ func (ctrl *menuController) AddMenu(ctx *gin.Context) {
 	// Success response
 	ctx.JSON(http.StatusCreated, menu)
 }
+
+func (ctrl *menuController) UpdateMenu(ctx *gin.Context) {
+	trxId := ctx.GetString(core.TRANSACTION_ID)
+	var menu models.Menu
+
+	// Get path params i.e. menu ID
+	menuId := ctx.Param("id")
+
+	// Get request data, convert to menu, on error return bad request response
+	if err := ctx.ShouldBindJSON(&menu); err != nil {
+		ctx.JSON(http.StatusBadRequest, models.NewErrorResponse(core.ErrInvalidRequestData))
+		return
+	}
+
+	// Update menu with new details, on error return server error response
+	menu, err := ctrl.service.UpdateMenu(trxId, menuId, &menu)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, models.NewErrorResponse(err))
+		return
+	}
+
+	// Success response
+	ctx.JSON(http.StatusOK, menu)
+}
+
+func (ctrl *menuController) DeleteMenu(ctx *gin.Context) {
+	trxId := ctx.GetString(core.TRANSACTION_ID)
+
+	// Get path params i.e. menu ID
+	menuId := ctx.Param("id")
+
+	// Delete given menu by ID, on error return server error response
+	if err := ctrl.service.DeleteMenu(trxId, menuId); err != nil {
+		ctx.JSON(http.StatusInternalServerError, models.NewErrorResponse(err))
+		return
+	}
+
+	// Success response
+	ctx.JSON(http.StatusOK, gin.H{})
+}

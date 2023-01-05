@@ -48,4 +48,6 @@ func setupAPIs(router *gin.Engine) {
 	// Setup API routes
 	router.GET("/api/menu", menuCtrl.GetAllMenu)
 	router.POST("/api/menu", menuCtrl.AddMenu)
+	router.PUT("/api/menu/:id", menuCtrl.UpdateMenu)
+	router.DELETE("/api/menu/:id", menuCtrl.DeleteMenu)
 }

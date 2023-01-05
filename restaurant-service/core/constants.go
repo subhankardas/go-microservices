@@ -24,4 +24,7 @@ const (
 	UNABLE_TO_CONNECT_DB            = "unable to connect to database"
 	UNABLE_TO_READ_ALL_MENU_FROM_DB = "unable to read list of all menu from database"
 	UNABLE_TO_ADD_MENU_TO_DB        = "unable to add menu details to database"
+	UNABLE_TO_GET_MENU_FROM_DB      = "unable to get menu details from database"
+	UNABLE_TO_UPDATE_MENU_TO_DB     = "unable to update menu details to database"
+	UNABLE_TO_DELETE_MENU_FROM_DB   = "unable to delete menu details from database"
 )
