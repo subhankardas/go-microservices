@@ -1,6 +1,6 @@
 # Restaurant Service - Go Microservice using Gin Framework + GORM  
 
-This is simple Go based microservice with *RESTful CRUD APIs* implementation using the Gin framework for handling HTTP request and GORM library as the ORM tool for CRUD operations on the data.
+This is simple Go based microservice with *RESTful CRUD APIs* implementation using the Gin framework for handling HTTP request and GORM library as the ORM tool for CRUD operations on the data. This project uses controller > service > data layer architecture.
 
 ## Prerequisites  
 
