@@ -4,10 +4,10 @@ import (
 	"os"
 
 	"github.com/gin-gonic/gin"
-	"github.com/subhankardas/go-microservices/restaurant-service/controllers"
 	"github.com/subhankardas/go-microservices/restaurant-service/core"
 	"github.com/subhankardas/go-microservices/restaurant-service/middleware"
 	"github.com/subhankardas/go-microservices/restaurant-service/models"
+	"github.com/subhankardas/go-microservices/restaurant-service/routes"
 )
 
 var logger core.Logger
@@ -33,7 +33,7 @@ func serve() {
 	router.Use(gin.CustomRecovery(middleware.NewRecoveryMW(logger).RecoveryMW))
 
 	// Setup API routes and controllers
-	setupAPIs(router)
+	setupRoutes(router)
 
 	// Run server on default/given port or PORT environment variable
 	if err := router.Run(config.Server.Port); err != nil {
@@ -41,13 +41,6 @@ func serve() {
 	}
 }
 
-func setupAPIs(router *gin.Engine) {
-	// Initialize controllers
-	menuCtrl := controllers.NewMenuController(config, logger)
-
-	// Setup API routes
-	router.GET("/api/menu", menuCtrl.GetAllMenu)
-	router.POST("/api/menu", menuCtrl.AddMenu)
-	router.PUT("/api/menu/:id", menuCtrl.UpdateMenu)
-	router.DELETE("/api/menu/:id", menuCtrl.DeleteMenu)
+func setupRoutes(router *gin.Engine) {
+	routes.SetupMenuRoutes(router, config, logger)
 }

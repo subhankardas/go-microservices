@@ -1,4 +1,4 @@
 .vscode
 products-service/uploads/*
 */tmp/*
-*/log*
+**/log*

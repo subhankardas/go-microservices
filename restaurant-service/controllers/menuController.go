@@ -17,11 +17,11 @@ type menuController struct {
 }
 
 // Constructor for menu controller layer.
-func NewMenuController(config *models.Config, logger core.Logger) *menuController {
+func NewMenuController(config *models.Config, logger core.Logger, service services.MenuService) *menuController {
 	return &menuController{
 		config:  config,
 		log:     logger,
-		service: services.NewMenuService(config, logger),
+		service: service,
 	}
 }
 

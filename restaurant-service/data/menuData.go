@@ -20,8 +20,7 @@ type menuData struct {
 }
 
 // Constructor for menu data layer.
-func NewMenuData(config *models.Config, logger core.Logger) MenuData {
-	db := core.NewDatabase(config, logger)
+func NewMenuData(config *models.Config, logger core.Logger, db core.Database) MenuData {
 	migrate(db)
 
 	return &menuData{
@@ -52,7 +51,7 @@ func (data *menuData) GetAllMenu(trxId string) ([]models.Menu, error) {
 
 func (data *menuData) AddMenu(trxId string, menu *models.Menu) error {
 	// Add new menu details to DB
-	if _, err := data.db.Create(&menu); err != nil {
+	if _, err := data.db.Create(menu); err != nil {
 		data.log.Errorf(trxId, "error: %v, cause: %v", core.UNABLE_TO_ADD_MENU_TO_DB, err)
 		return core.ErrUnableToAddMenuToDb
 	}

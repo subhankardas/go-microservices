@@ -21,11 +21,11 @@ type menuService struct {
 }
 
 // Constructor for menu business logic service layer.
-func NewMenuService(config *models.Config, logger core.Logger) MenuService {
+func NewMenuService(config *models.Config, logger core.Logger, data data.MenuData) MenuService {
 	return &menuService{
 		config: config,
 		log:    logger,
-		data:   data.NewMenuData(config, logger),
+		data:   data,
 	}
 }
 

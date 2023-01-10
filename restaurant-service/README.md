@@ -7,18 +7,23 @@ This is simple Go based microservice with *RESTful CRUD APIs* implementation usi
 1. Install and setup *Air* for enabling hot reloading
 
     ```bash
-    go install github.com/cosmtrek/air@latest
-    air init
+     make install-air
+    ```
+
+2. Install and setup *Mockgen* for mocking unit tests
+
+    ```bash
+     make install-mockgen
     ```
 
 ### Commands
 
 The makefile consists all important commands given below.
 
-1. Start docker containers for *postgresDB*
+1. Start docker containers for *postgresDB*, move to the *docker* directory and run the below command.
 
    ```bash
-   docker compose -f "docker-compose.yml" up
+   docker compose up pgadmin postgres
    ```
 
 2. Run service locally with hot reloading using *Air*
@@ -27,10 +32,16 @@ The makefile consists all important commands given below.
     make run-service-<profile-name>
     ```
 
-3. Run unit tests
+3. Run integration tests (service should be *running*)
 
     ```bash
-    make run-tests
+    make run-int-tests
+    ```
+
+4. Run unit tests
+
+    ```bash
+    make run-unit-tests
     ```
 
 #### Local Development Setup
