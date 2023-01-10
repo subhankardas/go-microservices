@@ -1,6 +1,6 @@
 # Restaurant Service - Go Microservice using Gin Framework + GORM  
 
-This is simple Go based microservice with *RESTful CRUD APIs* implementation using the Gin framework for handling HTTP request and GORM library as the ORM tool for CRUD operations on the data. This project uses controller > service > data layer architecture.
+This is a simple Go-based microservice with *RESTful CRUD APIs* implementation using the Gin framework for handling HTTP requests and the GORM library as the ORM tool for CRUD operations on the data. This project uses controller > service > data access layer architecture.
 
 ## Prerequisites  
 
@@ -18,9 +18,9 @@ This is simple Go based microservice with *RESTful CRUD APIs* implementation usi
 
 ### Commands
 
-The makefile consists all important commands given below.
+The makefile consists of all necessary commands given below.
 
-1. Start docker containers for *postgresDB*, move to the *docker* directory and run the below command.
+1. Start docker containers for *Postgres DB*, move to the *docker* directory, and run the below command.
 
    ```bash
    docker compose up pgadmin postgres
@@ -46,8 +46,8 @@ The makefile consists all important commands given below.
 
 #### Local Development Setup
 
-1. Connect to PostgresDB server
-    Login at [http://localhost:5050](http://localhost:5050/) using the admin credentials for pgAdmin > *Add New Server*
+1. Connect to the PostgresDB server
+    Login at [http://localhost:5050](http://localhost:5050/) using the admin credentials for pgAdmin > *Add New Server*
 
     ```bash
     Name: pg_server (any name will work)
